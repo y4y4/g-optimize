@@ -1,6 +1,6 @@
 class Base {
     constructor(className) {
-        console.log(`Class ${className} successfully loaded.`);
+        // console.log(`Class ${className} successfully loaded.`);
     }
 
 }

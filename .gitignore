@@ -2,10 +2,13 @@
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 
+# Builed folder
+lib
+
 # Remove some common IDE working directories
 .vscode
 
 .DS_Store
-
 test.js
 index.html
+deploy.bash

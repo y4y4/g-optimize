@@ -27,7 +27,7 @@ const config = {
         path: __dirname + '/lib',
         filename: outputFile,
         library: libraryObjName,
-        libraryTarget: 'umd',
+        libraryTarget: 'window',
         umdNamedDefine: false // must be 'false' for m to be resolved in require([''], (m) => {});
     },
     //========

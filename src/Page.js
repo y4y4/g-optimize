@@ -1,53 +1,70 @@
-import Base from "./Base";
 import Element from "./Element";
 import {
     checkRequired
 } from "./helpers/util";
 
-class Page extends Base {
+class Page extends Element {
     /**
      * Creates an instance of Page.
      * @param {string} url
      * @param {equal | unequal | starts | contains} rule 
-     * @param {} elements 
      * @memberof Page
      */
-    constructor(url = checkRequired('url'), rule = checkRequired('rule')) {
-        super(Page.name);
+    constructor(
+        url = checkRequired('url'),
+        rule = checkRequired('rule'),
+        key = checkRequired('key'),
+        breakpoints
+    ) {
+        super('body', key, null, 'single');
         this.url = url;
         this.rule = rule;
-        this.root = new Element('body', 'single');
-        this.elements = {};
-        this.active = this.isActive(url, rule);
+        this.breakpoint = breakpoints;
+        this.active = this.matchRule(url, rule) && this.matchBreakpoints(breakpoints);
     }
 
-    isActive(url, rule) {
+    /**
+     *
+     *
+     * @param {string} url
+     * @param {equal | unequal | starts | contains} rules[]
+     * @returns Boolean
+     * @memberof Page
+     */
+    matchRule(url, rules) {
         const currentUrl = window.location.href;
-        switch (rule) {
-            case 'equal':
-                return currentUrl === url;
-            case 'unequal':
-                return currentUrl !== url;
-            case 'starts':
-                return currentUrl.startsWith(url);
-            case 'contains':
-                return currentUrl.indexOf(url) !== -1;
-            default:
+
+        return rules.reduce((acc, rule) => {
+            if (!acc) {
                 return false;
-        }
+            }
+            switch (rule) {
+                case 'equal':
+                    acc = currentUrl === url;
+                    break;
+                case 'unequal':
+                    acc = currentUrl !== url;
+                    break;
+                case 'starts':
+                    acc = currentUrl.startsWith(url);
+                    break;
+                case 'contains':
+                    acc = currentUrl.indexOf(url) !== -1;
+                    break;
+                default:
+                    acc = false;
+            }
+            return acc;
+        }, true)
     }
 
-
-    addElement(selector = checkRequired('selector'), key = checkRequired('key'), type = 'single') {
-        const element = new Element(selector, type);
-        if (element.exists) {
-            this.elements = Object.assign(this.elements, {
-                [key]: element
-            });
-            return element;
-        } else {
-            throw new Error(`Not found elemnent with selector: ${selector}`);
+    matchBreakpoints(breakpoints) {
+        if (breakpoints && breakpoints.length) {
+            const width = window.innerWidth;
+            return width > breakpoints[0] && width <= breakpoints[1];
         }
+
+        return true;
     }
 }
 
